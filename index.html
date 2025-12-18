@@ -14,24 +14,15 @@
   --yellow:#E0BA30;
   --orange:orange;
 }
-body{
-  margin:0; background:var(--bg); color:#fff; font-family:Arial,sans-serif;
-}
-.page{
-  min-height:100vh; display:flex; flex-direction:column; align-items:center;
-}
-.header{
-  display:flex; flex-direction:column; align-items:center; margin-top:20px;
-}
+body{ margin:0; background:var(--bg); color:#fff; font-family:Arial,sans-serif; }
+.page{ min-height:100vh; display:flex; flex-direction:column; align-items:center; }
+
+.header{ display:flex; flex-direction:column; align-items:center; margin-top:20px; }
 .header img{ width:150px; max-width:80%; margin-bottom:12px; }
 h1{ color:#9effa0; margin:0; font-weight:600; text-align:center; }
-.subtitle{
-  color:var(--violet); font-style:italic;
-  font-size:clamp(14px,4vw,16px); margin:6px 0 24px;
-}
-.container{
-  max-width:720px; width:100%; padding:16px; text-align:center; box-sizing:border-box;
-}
+.subtitle{ color:var(--violet); font-style:italic; font-size:clamp(14px,4vw,16px); margin:6px 0 24px; }
+
+.container{ max-width:720px; width:100%; padding:16px; text-align:center; box-sizing:border-box; }
 .menu-btn{
   width:100%; max-width:420px; background:#1e1e1e;
   border:1.5px solid var(--green); border-radius:12px;
@@ -41,10 +32,7 @@ h1{ color:#9effa0; margin:0; font-weight:600; text-align:center; }
 .menu-btn:active{ transform:scale(.97); }
 .section{ display:none; }
 
-.circle{
-  width:150px; height:150px; border-radius:50%; background:#222;
-  margin:32px auto 24px;
-}
+.circle{ width:150px; height:150px; border-radius:50%; background:#222; margin:32px auto 24px; }
 .circle.on{ background:var(--green); }
 
 .controls{ margin:16px auto; max-width:300px; }
@@ -66,9 +54,7 @@ button.control.playing{ background:var(--green-light); }
 .chord.selected{ outline:2px solid var(--violet); }
 .chord.active{ background:var(--green); color:#000; }
 
-.count{
-  display:flex; justify-content:center; font-size:42px; margin-bottom:20px;
-}
+.count{ display:flex; justify-content:center; font-size:42px; margin-bottom:20px; }
 .count span{ width:36px; opacity:.3; }
 .count .one{ color:var(--yellow); opacity:1; }
 .count .other{ color:var(--orange); opacity:1; }
@@ -80,87 +66,77 @@ button.control.playing{ background:var(--green-light); }
 <body>
 <div class="page">
 
-  <div class="header">
-    <img src="https://static.wixstatic.com/media/b4a607_0927246f3864402c8d6d2d56723b8bba~mv2.png">
-    <h1>Prácticas guiadas – Sesión 3</h1>
-    <div class="subtitle">Cuando la música comienza</div>
+<div class="header">
+  <img src="https://static.wixstatic.com/media/b4a607_0927246f3864402c8d6d2d56723b8bba~mv2.png">
+  <h1>Prácticas guiadas – Sesión 3</h1>
+  <div class="subtitle">Cuando la música comienza</div>
+</div>
+
+<div class="container section" id="menu" style="display:block">
+  <button class="menu-btn" onclick="show('dig1')">▶ Digitación – Ejercicio 1</button>
+  <button class="menu-btn" onclick="show('dig2')">▶ Digitación – Ejercicio 2</button>
+  <button class="menu-btn" onclick="show('letitbe')">▶ Let It Be – Práctica de acordes</button>
+</div>
+
+<div class="container section" id="dig1">
+  <h2>Digitación – Ejercicio 1</h2>
+  <div class="subtitle">Fórmula 1–2–3–4</div>
+  <div class="circle" id="circle1"></div>
+  <div class="controls">
+    BPM: <span id="bpm1Val">30</span>
+    <input type="range" min="20" max="50" value="30" id="bpm1">
+  </div>
+  <button class="control" id="playDig1" onclick="toggleDig1()">Play / Stop</button>
+  <button class="control" onclick="back()">Volver</button>
+</div>
+
+<div class="container section" id="dig2">
+  <h2>Digitación – Ejercicio 2</h2>
+  <div class="subtitle">Fórmula 1–3–4–2</div>
+  <div class="circle" id="circle2"></div>
+  <div class="controls">
+    BPM: <span id="bpm2Val">30</span>
+    <input type="range" min="20" max="50" value="30" id="bpm2">
+  </div>
+  <button class="control" id="playDig2" onclick="toggleDig2()">Play / Stop</button>
+  <button class="control" onclick="back()">Volver</button>
+</div>
+
+<div class="container section" id="letitbe">
+  <h2>Let It Be – Práctica de acordes</h2>
+
+  <div class="progression">
+    <div class="chord">A</div><div class="chord">%</div>
+    <div class="chord">E</div><div class="chord">%</div>
+    <div class="chord">A</div><div class="chord">%</div>
+    <div class="chord">D</div><div class="chord">%</div>
   </div>
 
-  <!-- MENÚ -->
-  <div class="container section" id="menu" style="display:block">
-    <button class="menu-btn" onclick="show('dig1')">▶ Digitación – Ejercicio 1</button>
-    <button class="menu-btn" onclick="show('dig2')">▶ Digitación – Ejercicio 2</button>
-    <button class="menu-btn" onclick="show('letitbe')">▶ Let It Be – Práctica de acordes</button>
+  <div class="count">
+    <span>1</span><span>2</span><span>3</span><span>4</span>
   </div>
 
-  <!-- DIGITACIÓN 1 -->
-  <div class="container section" id="dig1">
-    <h2>Digitación – Ejercicio 1</h2>
-    <div class="subtitle">Fórmula 1–2–3–4</div>
-    <div class="circle" id="circle1"></div>
-    <div class="controls">
-      BPM: <span id="bpm1Val">30</span>
-      <input type="range" min="20" max="50" value="30" id="bpm1">
-    </div>
-    <button class="control" id="playDig1" onclick="toggleDig1()">Play / Stop</button>
-    <button class="control" onclick="back()">Volver</button>
+  <div class="controls">
+    BPM: <span id="bpmVal">45</span>
+    <input type="range" min="45" max="60" value="45" id="bpm">
   </div>
 
-  <!-- DIGITACIÓN 2 -->
-  <div class="container section" id="dig2">
-    <h2>Digitación – Ejercicio 2</h2>
-    <div class="subtitle">Fórmula 1–3–4–2</div>
-    <div class="circle" id="circle2"></div>
-    <div class="controls">
-      BPM: <span id="bpm2Val">30</span>
-      <input type="range" min="20" max="50" value="30" id="bpm2">
-    </div>
-    <button class="control" id="playDig2" onclick="toggleDig2()">Play / Stop</button>
-    <button class="control" onclick="back()">Volver</button>
-  </div>
-
-  <!-- LET IT BE -->
-  <div class="container section" id="letitbe">
-    <h2>Let It Be – Práctica de acordes</h2>
-
-    <div class="progression">
-      <div class="chord">A</div><div class="chord">%</div>
-      <div class="chord">E</div><div class="chord">%</div>
-      <div class="chord">A</div><div class="chord">%</div>
-      <div class="chord">D</div><div class="chord">%</div>
-    </div>
-
-    <div class="count">
-      <span>1</span><span>2</span><span>3</span><span>4</span>
-    </div>
-
-    <div class="controls">
-      BPM: <span id="bpmVal">45</span>
-      <input type="range" min="45" max="60" value="45" id="bpm">
-    </div>
-
-    <button class="control" id="playLet" onclick="toggleLet()">Play / Stop</button>
-    <button class="control" onclick="back()">Volver</button>
-  </div>
+  <button class="control" id="playLet" onclick="toggleLet()">Play / Stop</button>
+  <button class="control" onclick="back()">Volver</button>
+</div>
 
 </div>
 
 <script>
-/* ===== AUDIO (desbloqueo silencioso) ===== */
+/* ===== AUDIO ===== */
 let ctx=null;
-function unlockAudioSilent(){
+function ensureAudio(){
   if(!ctx){
     ctx=new (window.AudioContext||window.webkitAudioContext)();
-    // desbloqueo SILENCIOSO (sin golpe audible)
-    const o=ctx.createOscillator();
-    const g=ctx.createGain();
-    g.gain.value=0.000001;
-    o.connect(g); g.connect(ctx.destination);
-    o.start(); o.stop(ctx.currentTime+0.01);
   }
 }
 function clickSound(vol){
-  if(!ctx) return;
+  ensureAudio();
   const o=ctx.createOscillator();
   const g=ctx.createGain();
   o.frequency.value=900;
@@ -177,54 +153,40 @@ function show(id){
 }
 function back(){ stopAll(); show('menu'); }
 
-/* ===== DIGITACIONES (SIN CUENTA) ===== */
+/* ===== DIGITACIONES ===== */
 const bpm1=document.getElementById("bpm1");
 const bpm1Val=document.getElementById("bpm1Val");
-const circle1=document.getElementById("circle1");
 bpm1.oninput=()=>bpm1Val.textContent=bpm1.value;
-
 let t1=null,p1=false;
 function toggleDig1(){
   if(p1){ stopDig1(); return; }
-  unlockAudioSilent(); // habilita audio móvil
-  p1=true;
-  document.getElementById("playDig1").classList.add("playing");
-  pulse1();
-  t1=setInterval(pulse1,60000/bpm1.value);
+  ensureAudio(); clickSound(.2);
+  p1=true; playDig1.classList.add("playing");
+  pulse1(); t1=setInterval(pulse1,60000/bpm1.value);
 }
 function pulse1(){
   circle1.classList.add("on"); clickSound(.2);
   setTimeout(()=>circle1.classList.remove("on"),80);
 }
-function stopDig1(){
-  clearInterval(t1); p1=false;
-  document.getElementById("playDig1").classList.remove("playing");
-}
+function stopDig1(){ clearInterval(t1); p1=false; playDig1.classList.remove("playing"); }
 
 const bpm2=document.getElementById("bpm2");
 const bpm2Val=document.getElementById("bpm2Val");
-const circle2=document.getElementById("circle2");
 bpm2.oninput=()=>bpm2Val.textContent=bpm2.value;
-
 let t2=null,p2=false;
 function toggleDig2(){
   if(p2){ stopDig2(); return; }
-  unlockAudioSilent();
-  p2=true;
-  document.getElementById("playDig2").classList.add("playing");
-  pulse2();
-  t2=setInterval(pulse2,60000/bpm2.value);
+  ensureAudio(); clickSound(.2);
+  p2=true; playDig2.classList.add("playing");
+  pulse2(); t2=setInterval(pulse2,60000/bpm2.value);
 }
 function pulse2(){
   circle2.classList.add("on"); clickSound(.2);
   setTimeout(()=>circle2.classList.remove("on"),80);
 }
-function stopDig2(){
-  clearInterval(t2); p2=false;
-  document.getElementById("playDig2").classList.remove("playing");
-}
+function stopDig2(){ clearInterval(t2); p2=false; playDig2.classList.remove("playing"); }
 
-/* ===== LET IT BE (CUENTA EXACTA 4 TIEMPOS) ===== */
+/* ===== LET IT BE (FIX MÓVIL DEFINITIVO) ===== */
 const bpm=document.getElementById("bpm");
 const bpmVal=document.getElementById("bpmVal");
 bpm.oninput=()=>bpmVal.textContent=bpm.value;
@@ -241,7 +203,7 @@ chords.forEach((c,i)=>{
 
 let timer=null, playing=false, beat=0, chordIndex=0;
 
-function highlightCount(i){
+function highlight(i){
   countSpans.forEach(s=>s.className="");
   if(i===0) countSpans[0].classList.add("one");
   else countSpans[i].classList.add("other");
@@ -249,32 +211,32 @@ function highlightCount(i){
 
 function toggleLet(){
   if(playing){ stopLet(); return; }
-  unlockAudioSilent();      // desbloquea audio SIN sonido
-  startCountdownExact();    // 4 tiempos exactos al BPM
-}
 
-function startCountdownExact(){
-  stopAll();
-  let step=0;
+  ensureAudio();
+  /* 🔥 TIEMPO 1 AUDIBLE DENTRO DEL CLICK (CLAVE MÓVIL) */
   beat=0; chordIndex=selectedChord;
+  highlight(0);
+  clickSound(.25);   // ESTE ES EL “1”
+
+  let step=1;
   const interval=60000/bpm.value;
+
   timer=setInterval(()=>{
-    highlightCount(step);
-    clickSound(.25);        // SONIDO = NÚMERO (4 veces)
+    highlight(step);
+    clickSound(.25);
     step++;
     if(step===4){
       clearInterval(timer);
-      startLet();           // entra directo al tiempo 1
+      startLet(interval);
     }
   }, interval);
 }
 
-function startLet(){
-  playing=true;
-  document.getElementById("playLet").classList.add("playing");
-  const interval=60000/bpm.value;
+function startLet(interval){
+  playing=true; playLet.classList.add("playing");
+  beat=0;
   timer=setInterval(()=>{
-    highlightCount(beat);
+    highlight(beat);
     if(beat===0){
       chords.forEach(c=>c.classList.remove("active"));
       chords[chordIndex].classList.add("active");
@@ -287,10 +249,9 @@ function startLet(){
 
 function stopLet(){
   clearInterval(timer); playing=false;
-  document.getElementById("playLet").classList.remove("playing");
+  playLet.classList.remove("playing");
 }
 
-/* ===== STOP GLOBAL ===== */
 function stopAll(){
   stopDig1(); stopDig2(); stopLet();
 }
