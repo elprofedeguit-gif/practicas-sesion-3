@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prácticas guiadas – Sesión 3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  background: #141414;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 24px;
+}
+.header img {
+  width: 160px;
+  max-width: 70%;
+  margin-bottom: 14px;
+  opacity: .95;
+}
+h1 {
+  color: #9effa0;
+  margin: 0;
+  font-weight: 600;
+}
+.subtitle {
+  color: #C9A9FF;
+  font-style: italic;
+  font-size: 16px;
+  margin: 6px 0 26px;
+}
+
+/* CONTENEDOR */
+.container {
+  max-width: 760px;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+/* BOTONES MENÚ */
+.menu-btn {
+  width: 100%;
+  max-width: 420px;
+  background: #1e1e1e;
+  border: 1.5px solid #00b84f;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px auto;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  transition: transform .08s ease, background .2s ease;
+}
+.menu-btn:active { transform: scale(.97); }
+
+/* SECCIONES */
+.section { display: none; }
+
+/* DIGITACIÓN */
+.circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: #222;
+  margin: 36px auto 28px;
+  transition: background .1s ease;
+}
+.circle.on { background: #00b84f; }
+
+/* LET IT BE */
+.progression {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 0 28px;
+}
+.chord {
+  flex: 1;
+  margin: 0 6px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #222;
+  cursor: pointer;
+}
+.chord.selected { outline: 2px solid #B58CFF; }
+.chord.active { background: #00b84f; color: #000; }
+
+.count {
+  display: flex;
+  justify-content: center;
+  font-size: 48px;
+  margin-bottom: 24px;
+}
+.count span {
+  width: 40px;
+  opacity: .3;
+}
+.count .one { color: #E0BA30; opacity: 1; }
+.count .other { color: orange; opacity: 1; }
+
+/* CONTROLES */
+.controls { margin-top: 20px; }
+input[type=range] { width: 100%; }
+
+/* BOTONES */
+button.control {
+  background: #00b84f;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 26px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: transform .08s ease, background .2s ease;
+}
+button.control:active { transform: scale(.96); }
+button.control.playing { background: #6aff9c; }
+
+@media (max-width:600px){
+  .header img { width: 120px; }
+  .count { font-size: 36px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="header">
+  <img src="https://static.wixstatic.com/media/b4a607_0927246f3864402c8d6d2d56723b8bba~mv2.png">
+  <h1>Prácticas guiadas – Sesión 3</h1>
+  <div class="subtitle">Cuando la música comienza</div>
+</div>
+
+<!-- MENÚ -->
+<div class="container section" id="menu" style="display:block">
+  <button class="menu-btn" onclick="show('dig1')">▶ Digitación – Ejercicio 1</button>
+  <button class="menu-btn" onclick="show('dig2')">▶ Digitación – Ejercicio 2</button>
+  <button class="menu-btn" onclick="show('letitbe')">▶ Let It Be – Práctica de acordes</button>
+</div>
+
+<!-- DIGITACIÓN 1 -->
+<div class="container section" id="dig1">
+  <h2>Digitación – Ejercicio 1</h2>
+  <div class="subtitle">Fórmula 1–2–3–4</div>
+
+  <div class="circle" id="circle1"></div>
+
+  <div class="controls">
+    BPM: <span id="bpm1Val">30</span>
+    <input type="range" min="20" max="50" value="30" id="bpm1">
+  </div>
+
+  <button class="control" id="playDig1" onclick="toggleDig1()">Play / Stop</button>
+  <button class="control" onclick="back()">Volver</button>
+</div>
+
+<!-- DIGITACIÓN 2 -->
+<div class="container section" id="dig2">
+  <h2>Digitación – Ejercicio 2</h2>
+  <div class="subtitle">Fórmula 1–3–4–2</div>
+
+  <div class="circle" id="circle2"></div>
+
+  <div class="controls">
+    BPM: <span id="bpm2Val">30</span>
+    <input type="range" min="20" max="50" value="30" id="bpm2">
+  </div>
+
+  <button class="control" id="playDig2" onclick="toggleDig2()">Play / Stop</button>
+  <button class="control" onclick="back()">Volver</button>
+</div>
+
+<!-- LET IT BE -->
+<div class="container section" id="letitbe">
+  <h2>Let It Be – Práctica de acordes</h2>
+
+  <div class="progression">
+    <div class="chord">A</div><div class="chord">%</div>
+    <div class="chord">E</div><div class="chord">%</div>
+    <div class="chord">A</div><div class="chord">%</div>
+    <div class="chord">D</div><div class="chord">%</div>
+  </div>
+
+  <div class="count">
+    <span>1</span><span>2</span><span>3</span><span>4</span>
+  </div>
+
+  <div class="controls">
+    BPM: <span id="bpmVal">45</span>
+    <input type="range" min="45" max="60" value="45" id="bpm">
+  </div>
+
+  <button class="control" id="playBtn" onclick="toggleLetItBe()">Play / Stop</button>
+  <button class="control" onclick="back()">Volver</button>
+</div>
+
+</div>
+
+<script>
+function show(id){
+  stopAll();
+  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+function back(){
+  stopAll();
+  show('menu');
+}
+
+let ctx=null;
+function getCtx(){
+  if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)();
+  return ctx;
+}
+function clickSound(vol){
+  const c=getCtx();
+  const o=c.createOscillator();
+  const g=c.createGain();
+  o.frequency.value=900;
+  g.gain.value=vol;
+  o.connect(g); g.connect(c.destination);
+  o.start(); o.stop(c.currentTime+.05);
+}
+
+/* DIGITACIÓN 1 */
+let t1=null,p1=false;
+const c1=document.getElementById("circle1");
+const b1=document.getElementById("bpm1");
+const b1v=document.getElementById("bpm1Val");
+const pb1=document.getElementById("playDig1");
+b1.oninput=()=>b1v.innerText=b1.value;
+function toggleDig1(){p1?stopDig1():startDig1();}
+function startDig1(){
+  stopAll(); p1=true; pb1.classList.add("playing");
+  pulse1(); t1=setInterval(pulse1,60000/b1.value);
+}
+function pulse1(){
+  c1.classList.add("on"); clickSound(.2);
+  setTimeout(()=>c1.classList.remove("on"),80);
+}
+function stopDig1(){clearInterval(t1);p1=false;pb1.classList.remove("playing");}
+
+/* DIGITACIÓN 2 */
+let t2=null,p2=false;
+const c2=document.getElementById("circle2");
+const b2=document.getElementById("bpm2");
+const b2v=document.getElementById("bpm2Val");
+const pb2=document.getElementById("playDig2");
+b2.oninput=()=>b2v.innerText=b2.value;
+function toggleDig2(){p2?stopDig2():startDig2();}
+function startDig2(){
+  stopAll(); p2=true; pb2.classList.add("playing");
+  pulse2(); t2=setInterval(pulse2,60000/b2.value);
+}
+function pulse2(){
+  c2.classList.add("on"); clickSound(.2);
+  setTimeout(()=>c2.classList.remove("on"),80);
+}
+function stopDig2(){clearInterval(t2);p2=false;pb2.classList.remove("playing");}
+
+/* LET IT BE */
+let timer=null,beat=0,chordIndex=0,selectedChord=0,playing=false;
+const bpm=document.getElementById("bpm");
+const bpmVal=document.getElementById("bpmVal");
+const countSpans=document.querySelectorAll(".count span");
+const chords=document.querySelectorAll(".chord");
+const playBtn=document.getElementById("playBtn");
+bpm.oninput=()=>bpmVal.innerText=bpm.value;
+chords.forEach((c,i)=>{
+  c.onclick=()=>{
+    chords.forEach(x=>x.classList.remove("selected"));
+    c.classList.add("selected"); selectedChord=i;
+  };
+});
+function toggleLetItBe(){playing?stopLetItBe():startLetItBe();}
+function startLetItBe(){
+  stopAll(); beat=0; chordIndex=selectedChord;
+  playing=true; playBtn.classList.add("playing");
+  timer=setInterval(()=>{
+    highlight(beat);
+    if(beat===0){
+      chords.forEach(c=>c.classList.remove("active"));
+      chords[chordIndex].classList.add("active");
+      chordIndex=(chordIndex+1)%chords.length;
+      clickSound(.3);
+    } else clickSound(.15);
+    beat=(beat+1)%4;
+  },60000/bpm.value);
+}
+function highlight(i){
+  countSpans.forEach(s=>s.className="");
+  if(i===0)countSpans[0].classList.add("one");
+  else countSpans[i].classList.add("other");
+}
+function stopLetItBe(){clearInterval(timer);playing=false;playBtn.classList.remove("playing");}
+
+function stopAll(){
+  stopDig1(); stopDig2(); stopLetItBe();
+}
+</script>
+
+</body>
+</html>
