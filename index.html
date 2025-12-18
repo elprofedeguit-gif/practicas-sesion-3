@@ -12,6 +12,7 @@
   --green-light:#6aff9c;
   --violet:#C9A9FF;
   --yellow:#E0BA30;
+  --orange:orange;
 }
 
 body{
@@ -28,7 +29,6 @@ body{
   align-items:center;
 }
 
-/* HEADER */
 .header{
   display:flex;
   flex-direction:column;
@@ -53,7 +53,6 @@ h1{
   margin:6px 0 24px;
 }
 
-/* CONTENEDOR */
 .container{
   max-width:720px;
   width:100%;
@@ -62,7 +61,6 @@ h1{
   box-sizing:border-box;
 }
 
-/* MENÚ */
 .menu-btn{
   width:100%;
   max-width:420px;
@@ -75,14 +73,11 @@ h1{
   color:#fff;
   font-size:16px;
   font-weight:600;
-  transition:transform .08s ease;
 }
 .menu-btn:active{ transform:scale(.97); }
 
-/* SECCIONES */
 .section{ display:none; }
 
-/* DIGITACIÓN */
 .circle{
   width:150px;
   height:150px;
@@ -92,16 +87,12 @@ h1{
 }
 .circle.on{ background:var(--green); }
 
-/* CONTROLES */
 .controls{
   margin:16px auto;
   max-width:300px;
 }
-input[type=range]{
-  width:100%;
-}
+input[type=range]{ width:100%; }
 
-/* BOTONES */
 button.control{
   background:var(--green);
   color:#000;
@@ -112,12 +103,10 @@ button.control{
   cursor:pointer;
   font-size:15px;
   font-weight:600;
-  transition:transform .08s ease, background .2s ease;
 }
 button.control:active{ transform:scale(.96); }
 button.control.playing{ background:var(--green-light); }
 
-/* LET IT BE */
 .progression{
   display:flex;
   justify-content:space-between;
@@ -146,7 +135,7 @@ button.control.playing{ background:var(--green-light); }
   opacity:.3;
 }
 .count .one{ color:var(--yellow); opacity:1; }
-.count .other{ color:orange; opacity:1; }
+.count .other{ color:var(--orange); opacity:1; }
 
 @media(max-width:600px){
   .count{ font-size:34px; }
@@ -163,44 +152,36 @@ button.control.playing{ background:var(--green-light); }
   <div class="subtitle">Cuando la música comienza</div>
 </div>
 
-<!-- MENÚ -->
 <div class="container section" id="menu" style="display:block">
   <button class="menu-btn" onclick="show('dig1')">▶ Digitación – Ejercicio 1</button>
   <button class="menu-btn" onclick="show('dig2')">▶ Digitación – Ejercicio 2</button>
   <button class="menu-btn" onclick="show('letitbe')">▶ Let It Be – Práctica de acordes</button>
 </div>
 
-<!-- DIGITACIÓN 1 -->
 <div class="container section" id="dig1">
   <h2>Digitación – Ejercicio 1</h2>
   <div class="subtitle">Fórmula 1–2–3–4</div>
   <div class="circle" id="circle1"></div>
-
   <div class="controls">
     BPM: <span id="bpm1Val">30</span>
     <input type="range" min="20" max="50" value="30" id="bpm1">
   </div>
-
   <button class="control" id="playDig1" onclick="toggleDig1()">Play / Stop</button>
   <button class="control" onclick="back()">Volver</button>
 </div>
 
-<!-- DIGITACIÓN 2 -->
 <div class="container section" id="dig2">
   <h2>Digitación – Ejercicio 2</h2>
   <div class="subtitle">Fórmula 1–3–4–2</div>
   <div class="circle" id="circle2"></div>
-
   <div class="controls">
     BPM: <span id="bpm2Val">30</span>
     <input type="range" min="20" max="50" value="30" id="bpm2">
   </div>
-
   <button class="control" id="playDig2" onclick="toggleDig2()">Play / Stop</button>
   <button class="control" onclick="back()">Volver</button>
 </div>
 
-<!-- LET IT BE -->
 <div class="container section" id="letitbe">
   <h2>Let It Be – Práctica de acordes</h2>
 
@@ -227,7 +208,28 @@ button.control.playing{ background:var(--green-light); }
 </div>
 
 <script>
-/* NAVEGACIÓN */
+let ctx=null;
+function unlockAudio(){
+  if(!ctx){
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator();
+    const g=ctx.createGain();
+    g.gain.value=0.0001;
+    o.connect(g); g.connect(ctx.destination);
+    o.start(); o.stop(ctx.currentTime+0.01);
+  }
+}
+
+function clickSound(vol){
+  unlockAudio();
+  const o=ctx.createOscillator();
+  const g=ctx.createGain();
+  o.frequency.value=900;
+  g.gain.value=vol;
+  o.connect(g); g.connect(ctx.destination);
+  o.start(); o.stop(ctx.currentTime+.05);
+}
+
 function show(id){
   stopAll();
   document.querySelectorAll('.section').forEach(s=>s.style.display='none');
@@ -235,122 +237,108 @@ function show(id){
 }
 function back(){ stopAll(); show('menu'); }
 
-/* AUDIO */
-let ctx=null;
-function getCtx(){
-  if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)();
-  return ctx;
-}
-function clickSound(vol){
-  const c=getCtx();
-  const o=c.createOscillator();
-  const g=c.createGain();
-  o.frequency.value=900;
-  g.gain.value=vol;
-  o.connect(g); g.connect(c.destination);
-  o.start(); o.stop(c.currentTime+.05);
-}
-
-/* CUENTA REGRESIVA */
-function countdown(cb){
-  let i=0;
-  const seq=[1,2,3,4];
-  const t=setInterval(()=>{
-    clickSound(.25);
-    if(++i===4){ clearInterval(t); cb(); }
-  },600);
-}
-
-/* DIGITACIÓN 1 */
+/* DIGITACIONES */
 let t1=null,p1=false;
-const c1=document.getElementById("circle1");
-const b1=document.getElementById("bpm1");
-const b1v=document.getElementById("bpm1Val");
-const pb1=document.getElementById("playDig1");
-b1.oninput=()=>b1v.innerText=b1.value;
+let t2=null,p2=false;
 
 function toggleDig1(){
-  p1?stopDig1():countdown(startDig1);
-}
-function startDig1(){
-  stopAll(); p1=true; pb1.classList.add("playing");
-  pulse1(); t1=setInterval(pulse1,60000/b1.value);
+  if(p1){ stopDig1(); return; }
+  unlockAudio(); clickSound(.2);
+  p1=true;
+  document.getElementById("playDig1").classList.add("playing");
+  pulse1();
+  t1=setInterval(pulse1,60000/bpm1.value);
 }
 function pulse1(){
-  c1.classList.add("on"); clickSound(.2);
-  setTimeout(()=>c1.classList.remove("on"),80);
+  circle1.classList.add("on");
+  clickSound(.2);
+  setTimeout(()=>circle1.classList.remove("on"),80);
 }
-function stopDig1(){ clearInterval(t1); p1=false; pb1.classList.remove("playing"); }
-
-/* DIGITACIÓN 2 */
-let t2=null,p2=false;
-const c2=document.getElementById("circle2");
-const b2=document.getElementById("bpm2");
-const b2v=document.getElementById("bpm2Val");
-const pb2=document.getElementById("playDig2");
-b2.oninput=()=>b2v.innerText=b2.value;
+function stopDig1(){
+  clearInterval(t1); p1=false;
+  document.getElementById("playDig1").classList.remove("playing");
+}
 
 function toggleDig2(){
-  p2?stopDig2():countdown(startDig2);
-}
-function startDig2(){
-  stopAll(); p2=true; pb2.classList.add("playing");
-  pulse2(); t2=setInterval(pulse2,60000/b2.value);
+  if(p2){ stopDig2(); return; }
+  unlockAudio(); clickSound(.2);
+  p2=true;
+  document.getElementById("playDig2").classList.add("playing");
+  pulse2();
+  t2=setInterval(pulse2,60000/bpm2.value);
 }
 function pulse2(){
-  c2.classList.add("on"); clickSound(.2);
-  setTimeout(()=>c2.classList.remove("on"),80);
+  circle2.classList.add("on");
+  clickSound(.2);
+  setTimeout(()=>circle2.classList.remove("on"),80);
 }
-function stopDig2(){ clearInterval(t2); p2=false; pb2.classList.remove("playing"); }
+function stopDig2(){
+  clearInterval(t2); p2=false;
+  document.getElementById("playDig2").classList.remove("playing");
+}
 
 /* LET IT BE */
 let timer=null,beat=0,chordIndex=0,selectedChord=0,playing=false;
-const bpm=document.getElementById("bpm");
-const bpmVal=document.getElementById("bpmVal");
-const countSpans=document.querySelectorAll(".count span");
-const chords=document.querySelectorAll(".chord");
-const playLet=document.getElementById("playLet");
-bpm.oninput=()=>bpmVal.innerText=bpm.value;
 
-chords.forEach((c,i)=>{
+document.querySelectorAll(".chord").forEach((c,i)=>{
   c.onclick=()=>{
-    chords.forEach(x=>x.classList.remove("selected"));
-    c.classList.add("selected"); selectedChord=i;
+    document.querySelectorAll(".chord").forEach(x=>x.classList.remove("selected"));
+    c.classList.add("selected");
+    selectedChord=i;
   };
 });
 
 function toggleLet(){
-  playing?stopLet():countdown(startLet);
+  if(playing){ stopLet(); return; }
+  unlockAudio();
+  clickSound(.3); // feedback inmediato
+  startCountdown();
 }
+
+function startCountdown(){
+  let count=0;
+  beat=0;
+  chordIndex=selectedChord;
+  timer=setInterval(()=>{
+    highlight(count);
+    clickSound(.25);
+    count++;
+    if(count===4){
+      clearInterval(timer);
+      startLet();
+    }
+  },60000/bpm.value);
+}
+
 function startLet(){
-  stopAll(); playing=true; playLet.classList.add("playing");
-  beat=0; chordIndex=selectedChord;
+  playing=true;
+  playLet.classList.add("playing");
   timer=setInterval(()=>{
     highlight(beat);
     if(beat===0){
-      chords.forEach(c=>c.classList.remove("active"));
-      chords[chordIndex].classList.add("active");
-      chordIndex=(chordIndex+1)%chords.length;
+      document.querySelectorAll(".chord").forEach(c=>c.classList.remove("active"));
+      document.querySelectorAll(".chord")[chordIndex].classList.add("active");
+      chordIndex=(chordIndex+1)%document.querySelectorAll(".chord").length;
       clickSound(.3);
     } else clickSound(.15);
     beat=(beat+1)%4;
   },60000/bpm.value);
 }
+
 function highlight(i){
-  countSpans.forEach(s=>s.className="");
-  if(i===0) countSpans[0].classList.add("one");
-  else countSpans[i].classList.add("other");
+  document.querySelectorAll(".count span").forEach(s=>s.className="");
+  if(i===0) document.querySelectorAll(".count span")[0].classList.add("one");
+  else document.querySelectorAll(".count span")[i].classList.add("other");
 }
+
 function stopLet(){
   clearInterval(timer); playing=false;
   playLet.classList.remove("playing");
 }
 
-/* STOP GENERAL */
 function stopAll(){
   stopDig1(); stopDig2(); stopLet();
 }
 </script>
-
 </body>
 </html>
