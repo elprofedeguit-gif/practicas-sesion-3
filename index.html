@@ -14,12 +14,7 @@
   --yellow:#E0BA30;
   --orange:orange;
 }
-body{
-  margin:0;
-  background:var(--bg);
-  color:#fff;
-  font-family:Arial,sans-serif;
-}
+body{ margin:0; background:var(--bg); color:#fff; font-family:Arial,sans-serif; }
 .page{
   min-height:100vh;
   display:flex;
@@ -29,109 +24,48 @@ body{
   box-sizing:border-box;
 }
 
-.header{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-.header img{
-  width:150px;
-  max-width:80%;
-  margin-bottom:12px;
-}
-h1{
-  color:var(--green);
-  margin:0;
-  font-weight:600;
-  text-align:center;
-}
-.subtitle{
-  color:var(--violet);
-  font-style:italic;
-  font-size:clamp(14px,4vw,16px);
-  margin:6px 0 24px;
-}
+.header{ display:flex; flex-direction:column; align-items:center; }
+.header img{ width:150px; max-width:80%; margin-bottom:12px; }
 
-.container{
-  max-width:720px;
-  width:100%;
-  padding:16px;
-  text-align:center;
-  box-sizing:border-box;
-}
+h1{ color:var(--green); margin:0; font-weight:600; text-align:center; }
+.subtitle{ color:var(--violet); font-style:italic; font-size:clamp(14px,4vw,16px); margin:6px 0 24px; }
+
+.container{ max-width:720px; width:100%; padding:16px; text-align:center; box-sizing:border-box; }
 .menu-btn{
-  width:100%;
-  max-width:420px;
-  background:#1e1e1e;
-  border:1.5px solid var(--green);
-  border-radius:12px;
-  padding:16px;
-  margin:12px auto;
-  cursor:pointer;
-  color:#fff;
-  font-size:16px;
-  font-weight:600;
+  width:100%; max-width:420px; background:#1e1e1e;
+  border:1.5px solid var(--green); border-radius:12px;
+  padding:16px; margin:12px auto; cursor:pointer;
+  color:#fff; font-size:16px; font-weight:600;
 }
 .menu-btn:active{ transform:scale(.97); }
 
 .section{ display:none; }
 
-.circle{
-  width:150px;
-  height:150px;
-  border-radius:50%;
-  background:#222;
-  margin:32px auto 24px;
-}
+.circle{ width:150px; height:150px; border-radius:50%; background:#222; margin:32px auto 24px; }
 .circle.on{ background:var(--green); }
 
 .controls{ margin:16px auto; max-width:300px; }
 input[type=range]{ width:100%; }
 
 button.control{
-  background:var(--green);
-  color:#000;
-  border:none;
-  border-radius:12px;
-  padding:12px 26px;
-  margin:10px;
-  cursor:pointer;
-  font-size:15px;
-  font-weight:600;
+  background:var(--green); color:#000; border:none; border-radius:12px;
+  padding:12px 26px; margin:10px; cursor:pointer;
+  font-size:15px; font-weight:600;
 }
 button.control:active{ transform:scale(.96); }
 button.control.playing{ background:var(--green-light); }
 
-.progression{
-  display:flex;
-  justify-content:space-between;
-  margin:20px 0 24px;
-}
-.chord{
-  flex:1;
-  margin:0 4px;
-  padding:12px 6px;
-  border-radius:10px;
-  background:#222;
-  cursor:pointer;
-  font-size:14px;
-}
+.progression{ display:flex; justify-content:space-between; margin:20px 0 24px; }
+.chord{ flex:1; margin:0 4px; padding:12px 6px; border-radius:10px; background:#222; cursor:pointer; font-size:14px; }
 .chord.selected{ outline:2px solid var(--violet); }
 .chord.active{ background:var(--green); color:#000; }
 
-.count{
-  display:flex;
-  justify-content:center;
-  font-size:42px;
-  margin-bottom:20px;
-}
+.count{ display:flex; justify-content:center; font-size:42px; margin-bottom:20px; }
 .count span{ width:36px; opacity:.3; }
 .count .one{ color:var(--yellow); opacity:1; }
 .count .other{ color:var(--orange); opacity:1; }
 
-@media(max-width:600px){
-  .count{ font-size:34px; }
-}
+@media(max-width:600px){ .count{ font-size:34px; } }
 </style>
 </head>
 
@@ -200,6 +134,13 @@ button.control.playing{ background:var(--green-light); }
 </div>
 
 <script>
+/* ===== REFERENCIAS DOM (CLAVE) ===== */
+const playDig1 = document.getElementById("playDig1");
+const playDig2 = document.getElementById("playDig2");
+const playLet  = document.getElementById("playLet");
+const circle1  = document.getElementById("circle1");
+const circle2  = document.getElementById("circle2");
+
 /* ===== AUDIO ===== */
 let ctx=null;
 function ensureAudio(){
@@ -225,11 +166,12 @@ function show(id){
 }
 function back(){ stopAll(); show('menu'); }
 
-/* ===== DIGITACIONES ===== */
+/* ===== DIGITACIÓN 1 ===== */
 const bpm1=document.getElementById("bpm1");
 const bpm1Val=document.getElementById("bpm1Val");
 bpm1.oninput=()=>bpm1Val.textContent=bpm1.value;
 let t1=null,p1=false;
+
 function toggleDig1(){
   if(p1){ stopDig1(); return; }
   ensureAudio(); clickSound(.2);
@@ -240,12 +182,17 @@ function pulse1(){
   circle1.classList.add("on"); clickSound(.2);
   setTimeout(()=>circle1.classList.remove("on"),80);
 }
-function stopDig1(){ clearInterval(t1); p1=false; playDig1.classList.remove("playing"); }
+function stopDig1(){
+  clearInterval(t1); p1=false;
+  playDig1.classList.remove("playing");
+}
 
+/* ===== DIGITACIÓN 2 ===== */
 const bpm2=document.getElementById("bpm2");
 const bpm2Val=document.getElementById("bpm2Val");
 bpm2.oninput=()=>bpm2Val.textContent=bpm2.value;
 let t2=null,p2=false;
+
 function toggleDig2(){
   if(p2){ stopDig2(); return; }
   ensureAudio(); clickSound(.2);
@@ -256,7 +203,10 @@ function pulse2(){
   circle2.classList.add("on"); clickSound(.2);
   setTimeout(()=>circle2.classList.remove("on"),80);
 }
-function stopDig2(){ clearInterval(t2); p2=false; playDig2.classList.remove("playing"); }
+function stopDig2(){
+  clearInterval(t2); p2=false;
+  playDig2.classList.remove("playing");
+}
 
 /* ===== LET IT BE ===== */
 const bpm=document.getElementById("bpm");
