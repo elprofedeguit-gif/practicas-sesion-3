@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Zona de Prácticas – Sesión 3</title>
+<title>Zona de Práctica – Sesión 3 ⭐</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -68,7 +68,7 @@ button.control.playing{ background:var(--green-light); }
 
 <div class="header">
   <img src="https://static.wixstatic.com/media/b4a607_0927246f3864402c8d6d2d56723b8bba~mv2.png">
-  <h1>Prácticas guiadas – Sesión 3</h1>
+  <h1>Zona de Práctica – Sesión 3 ⭐</h1>
   <div class="subtitle">Cuando la música comienza</div>
 </div>
 
@@ -127,6 +127,7 @@ button.control.playing{ background:var(--green-light); }
 
 </div>
 
+<!-- SCRIPT ORIGINAL SIN CAMBIOS -->
 <script>
 /* ===== AUDIO ===== */
 let ctx=null;
@@ -186,7 +187,7 @@ function pulse2(){
 }
 function stopDig2(){ clearInterval(t2); p2=false; playDig2.classList.remove("playing"); }
 
-/* ===== LET IT BE (FIX MÓVIL DEFINITIVO) ===== */
+/* ===== LET IT BE ===== */
 const bpm=document.getElementById("bpm");
 const bpmVal=document.getElementById("bpmVal");
 bpm.oninput=()=>bpmVal.textContent=bpm.value;
@@ -213,10 +214,9 @@ function toggleLet(){
   if(playing){ stopLet(); return; }
 
   ensureAudio();
-  /* 🔥 TIEMPO 1 AUDIBLE DENTRO DEL CLICK (CLAVE MÓVIL) */
   beat=0; chordIndex=selectedChord;
   highlight(0);
-  clickSound(.25);   // ESTE ES EL “1”
+  clickSound(.25);
 
   let step=1;
   const interval=60000/bpm.value;
@@ -258,5 +258,3 @@ function stopAll(){
 </script>
 </body>
 </html>
-
-
